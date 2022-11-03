@@ -5,18 +5,8 @@
 </head>
 
 <style>
-   input[type=text] {
-      border-color: lightblue;
-      color: black;
-   }
-
-   input[type=date] {
-      border-color: lightblue;
-      color: black;
-   }
-
-   textarea {
-      border-color: lightblue;
+.setcolor {
+      border-color: #29B572;
       color: black;
    }
 </style>
@@ -54,13 +44,15 @@
                               <div class="col-sm-12 col-md-6">
                                  <div id="user_list_datatable_info" class="dataTables_filter">
                                     <div class="row" style="padding-left: 20px;">
-                                       <select class="form-control col-md-4 mr-2" id="categorie_filtre" onchange="loadProdByCategorie();">
-                                       </select>
                                        <div class="form-group col-md-4">
-                                          <input type="text" id="txt_recherche" value="" class="form-control mr-2" placeholder="Rechercher ici ... ">
+                                          <select class="form-control mr-2 setcolor" id="categorie_filtre" onchange="load(null,document.getElementById('categorie_filtre').value);">
+                                          </select>
+                                       </div>
+                                       <div class="form-group col-md-4">
+                                          <input type="text" id="txt_recherche" value="" class="form-control mr-2 setcolor" placeholder="Rechercher ici ... ">
                                        </div>
                                        <div class="form-group col-md-2">
-                                          <input type="button" onclick="rechercher();" value="Rechercher" class="btn btn-primary mr-2">
+                                          <input type="button" onclick="load(document.getElementById('txt_recherche').value);" value="Rechercher" class="btn btn-primary mr-2">
                                        </div>
                                     </div>
 
@@ -69,12 +61,16 @@
 
                               <div class="col-sm-3 col-md-3">
                                  <div class="user-list-files d-flex float-right">
-                                    <a href="#" class="iq-bg-primary" data-toggle="modal" data-target="#addProduit">
+
+                                    <a href="#" class="iq-bg-primary" data-toggle="modal" data-target="#addProduit" onclick="document.getElementById('txy').innerHTML='';">
                                        Nouveau produit
                                     </a>
+
+
                                     <a class="iq-bg-primary" href="#" data-toggle="modal" data-target="#addCategorie">
                                        Catégorie produit
                                     </a>
+
                                  </div>
                               </div>
                            </div>
@@ -161,8 +157,7 @@
 
 
       <?php include './views/stock/ajout_produit.php'; ?>
-      <?php include './views/stock/ajout_categorie.php'; ?>
-      <?php include './views/stock/add_approvisionnement.php'; ?>
+      <?php include './views/stock/ajout_categorie.php'; ?> 
 
       <!-- Ajout Produit -->
 
@@ -267,25 +262,27 @@
 
             loadCombo("categorie_filtre", all_categorie);
             loadCombo("categorie_produit", all_categorie);
-            loadCombo("entrep", all_succursale);
-            loadComboList("list_fournisseur", all_fournisseur);
+             
 
             document.getElementById("numero").value = "31" + all_produits.length;
          }
 
-         function load() {
+         function load(search = null, categorie = null) {
 
-            HttpPost("/produits-load", {}).then((res) => {
+            HttpPost("/produits-load", {
+               search,
+               categorie
+            }).then((res) => {
                var json = res.data.data;
                all_categorie = json.categories;
                all_produits = json.produits;
                all_succursale = json.succursale;
                all_fournisseur = json.fournisseur;
                access_files = url_base + res.data.file_folder;
-               
+               $("#barcode").val(json.barcode);
                loadCateg();
                loadProd();
-               $("#barcode").val(json.barcode);
+
             });
          }
 
@@ -296,29 +293,16 @@
             document.getElementById("cout_total").value = (count * qte);
          }
 
-         function rechercher() {
-            var txt_recherche = document.getElementById("txt_recherche").value;
-            txt_recherche = txt_recherche.toUpperCase();
-            var tab = document.getElementById("tab_produit");
-            tab.innerHTML = "";
-            var xs = 0;
-            all_produits.forEach(element => {
-               if (element.produit.toUpperCase().includes(txt_recherche) || element.categorie.toUpperCase().includes(txt_recherche) || element.description.toUpperCase().includes(txt_recherche)) {
-                  tab.innerHTML += setElements(element);
-               }
 
-            });
-         }
 
          function loadProd() {
             var tab = document.getElementById("tab_produit");
             tab.innerHTML = "";
             var xs = 0;
             all_produits.forEach(element => {
-               if (xs <= 100) {
-                  tab.innerHTML += setElements(element);
-               }
-               xs++;
+
+               tab.innerHTML += setElements(element);
+
             });
          }
 
@@ -346,7 +330,7 @@
                etat = 'danger';
             }
 
-            var img = './<?php url(); ?>views/images/defaultuser.png';
+            var img = './<?php url(); ?>views/images/defaultimg.jpeg';
 
             if (element.img != null) {
                img = access_files + element.img;
@@ -372,9 +356,7 @@
                                                    <i class="ri-more-fill"></i>
                                                 </span>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                   <a class="dropdown-item" href="#" onclick='setV("${element.id}","${element.produit}");' data-placement="top" data-original-title="Approvisionnement" data-toggle="modal" data-target="#approvisionnement">
-                                                   <i class="fa fa-plus mr-2" aria-hidden="true"></i>Approvisionnement
-                                                   </a>
+                                                  
                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#addProduit" onclick='showModifier("${element.id}","${element.produit}","${element.categorie}","${element.id_compte}","${element.qte_min}","${element.prix}","${element.prix_min}","${element.description}","${element.points}");'>
                                                       <i class="ri-delete-bin-6-fill mr-2"></i>Modifier
                                                    </a>
@@ -382,7 +364,7 @@
                                                       <i class="ri-pencil-fill mr-2">
                                                       </i>Supprimer
                                                    </a>
-                                                   <a class="dropdown-item" href="#"><i class="ri-printer-fill mr-2"></i>Mouvement du produit</a>
+                                                    
                                                 </div>
                                              </div>
                                           </div>

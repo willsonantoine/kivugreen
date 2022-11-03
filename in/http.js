@@ -1,5 +1,5 @@
 //Url base
-const url_base = "http://dbsystem-api1.test";
+const url_base = "http://kivugreen-apis.test";
 const id_auth = "6363531ba90ce6363531ba90d9";
 
 // getToken
