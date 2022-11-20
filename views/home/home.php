@@ -72,7 +72,7 @@
                         </div>
                         <p class="text-secondary">Coopératives</p>
                         <div class="d-flex align-items-center justify-content-between">
-                           <h4><b id="comptes">0</b></h4>
+                           <h4><b id="cooperative">0</b></h4>
                            <div id="iq-chart-box2"></div>
                         </div>
                      </div>
@@ -84,7 +84,7 @@
                         <div class="iq-box-absolute icon iq-icon-box rounded-circle iq-bg-success">
                            <i class="fa fa-users"></i>
                         </div>
-                        <p class="text-secondary">Utilisateurs</p>
+                        <p class="text-secondary">Zones</p>
                         <div class="d-flex align-items-center justify-content-between">
                            <h4><b id="utilisateurs">0</b></h4>
                            <div id="iq-chart-box3"></div>
@@ -98,7 +98,7 @@
                         <div class="iq-box-absolute icon iq-icon-box rounded-circle iq-bg-warning">
                            <i class="ri-pie-chart-2-line"></i>
                         </div>
-                        <p class="text-secondary">Opérations</p>
+                        <p class="text-secondary">Information du Marché</p>
                         <div class="d-flex align-items-center justify-content-between">
                            <h4><b id="transactions">0</b></h4>
                            <div id="iq-chart-box4"></div>
@@ -110,7 +110,7 @@
                   <div class="iq-card iq-card-block iq-card-stretch iq-card-height">
                      <div class="iq-card-header d-flex justify-content-between">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Historique des transactions </h4>
+                           <h4 class="card-title">Solde SMS </h4>
                         </div>
                      </div>
                      <div class="iq-card-body row m-0 align-items-center pb-0">
@@ -121,7 +121,7 @@
                   </div>
                </div>
                <div class="col-lg-4">
-                  <div class="iq-card iq-card-block iq-card-stretch iq-card-height banner-image-block-bg position-relative" style="background: transparent url(./<?php url(); ?>views/images/banniere.png) no-repeat scroll center; background-size: contain; height: 440px; box-shadow: none;">
+                  <div class="iq-card iq-card-block iq-card-stretch iq-card-height banner-image-block-bg position-relative" style="background: transparent url(./<?php url(); ?>views/images/banniere3.jpg) no-repeat scroll center; background-size: contain; height: 440px; box-shadow: none;">
                   </div>
                </div>
 
@@ -157,7 +157,7 @@
             $("#identification").html(""+json.identifications);
             $("#transactions").html(""+json.transactions);
             $("#utilisateurs").html(""+json.utilisateurs);
-            $("#comptes").html(""+json.comptes);
+            $("#cooperative").html(""+json.cooperative);
             setErreur(true, res.data.message);
          });
       }

@@ -81,7 +81,18 @@ if (count($ALL_ACCESS) <= 0) {
                   </a>
                </li>
             <?PHP } ?>
-
+            <?php
+            if (in_array('PARAMETRES', $ALL_ACCESS)) {
+            ?>
+               <li <?php active_menu("parametre", $menu); ?>>
+                  <a href="#menu-level" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false">
+                     <i class="ri-record-circle-line iq-arrow-left"></i>
+                     <span>Paramètres</span><i class="ri-arrow-right-s-line iq-arrow-right"></i></a>
+                  <ul id="menu-level" class="iq-submenu collapse" data-parent="#iq-sidebar-toggle"> 
+                     <li><a href="<?php url(); ?>admin/organisation-entreprise"><i class="ri-record-circle-line"></i>Configuration</a></li> 
+                  </ul>
+               </li>
+            <?PHP } ?>
 
          </ul>
       </nav>
