@@ -46,7 +46,7 @@
                                         <option value="Agriculteur">Agriculteur</option>
                                         <option value="Vendeur">Vendeur</option>
                                         <option value="Acheteur">Acheteur</option>
-                                        <option value="Agent">Utilisateur/Agent</option> 
+                                        <option value="Agent">Utilisateur/Agent</option>
                                         <option value="Default">Default</option>
                                      </select>
                                   </div>
@@ -143,8 +143,7 @@
     <?php include './views/auth/generate_qr_code.php'; ?>
     <?php include './views/auth/add_user_membre.php'; ?>
     <?php include './views/auth/add_user_membre_categorie.php'; ?>
-    <?php include './views/sms/send-sms.php'; ?>
-    <?php include './views/auth/access_users.php'; ?>
+    <?php include './views/sms/send-sms.php'; ?> 
     <?php include './views/auth/statistiques.php'; ?>
 
 
@@ -295,16 +294,12 @@
              }
 
              loadCombo("cooperative_list", liste_cooperative, true);
-             loadProdByType()
-             load_liste_access();
+             loadProdByType() 
              loadStat();
 
           }).catch(function(err) {
              console.log(err.message);
-             document.getElementById("txy").innerHTML = setErreur(true, err.message);
-             if (err.message == "Request failed with status code 401") {
-                window.location.href = "../login";
-             }
+             document.getElementById("txy").innerHTML = setErreur(true, err.message); 
           });
        }
 
@@ -360,7 +355,7 @@
        }
 
        function getElement(element) {
-          var img = './<?php url(); ?>views/images/defaultuser.png';
+          var img = '<?php url(); ?>views/images/defaultuser.png';
 
           if (element.img != null) {
              img = access_files + element.img;
@@ -385,13 +380,6 @@
           }
 
           var str_on_web = (element.on_web == 1);
-
-          var isAC = (isAccess) ? `<a class="dropdown-item" href="#" onclick="load_liste_access();selectAccess('${element.id}');document.getElementById('id_user_access').value ='${element.id}'; document.getElementById('customSwitch1').checked = ${str_etat};document.getElementById('show_on_web').checked = ${str_on_web};document.getElementById('validateur1').checked = ${str_etat_validator};document.getElementById('all').innerHTML='';" data-toggle="modal" data-target=".access-users"  >
-                                 <i class="fa fa-lock" aria-hidden="true"></i>&nbsp;&nbsp;Gérer les access pour cette personne
-                              </a>` : '';
-          var isSM = (isSendSMS) ? `<a class="dropdown-item" data-toggle="modal" data-target=".send-sms" onclick='selectVal("${element.id}","${element.phone}");document.getElementById("show-error").innerHTML="";'   href="#">
-                                 <i class="fa fa-envelope" aria-hidden="true"></i>&nbsp;&nbsp;Envoyer un sms
-                              </a>` : '';
 
           return `
                    <tr>
@@ -418,8 +406,7 @@
                                     <a class="dropdown-item"  href="<?php url(); ?>admin/show-profil/${element.id}">
                                        <i class="fa fa-address-card" aria-hidden="true"></i>&nbsp;&nbsp;Afficher le profil complet
                                     </a>
-                                    ${isSM}
-                                    ${isAC}
+                                    
                                     <a onclick="deleteMembre('${element.id}')" class="dropdown-item" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete" href="#">
                                        <i class="ri-delete-bin-line"></i>&nbsp;&nbsp;Supprimer
                                     </a>

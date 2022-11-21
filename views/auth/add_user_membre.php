@@ -231,6 +231,7 @@
                $("#type").val("");
                $('#blah').attr('src', "<?php url(); ?>images/defaultuser.png");
             }
+            
             load();
          }
       }).catch(function(err) {

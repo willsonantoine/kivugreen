@@ -10,7 +10,7 @@
          <div class="modal-body">
             <div class="row">
                <div class="col-md-4">
-               <img src="<?php url(); ?>views/images/defaultimg.jpeg" id="blah" class="mb-0" onchange="readURL(this);" alt="defultuser" height="200" width="200" />
+                  <img src="<?php url(); ?>views/images/defaultimg.jpeg" id="blah" class="mb-0" onchange="readURL(this);" alt="defultuser" height="200" width="200" />
                   <br>
                </div>
                <input type="file" name="img" id="myfile" class="form-control" onChange="readURL(document.getElementById('myfile'));" style="display:none;" />
@@ -18,19 +18,19 @@
                   <div class="row">
 
                      <div class="form-group col-md-8">
-                        <label for="produit_">Produit</label>
-                        <input type="text" class="form-control mb-0 setcolor" id="produitv" name="produit" placeholder="Nom du produit">
+                        <label for="produit">Produit</label>
+                        <input type="text" class="form-control mb-0 setcolor" id="produit" placeholder="Nom du produit">
                      </div>
 
                      <div class="form-group col-md-4">
-                        <label for="produit_">N° Compte</label>
-                        <input type="number" value="" class="form-control mb-0 setcolor" id="numero" name="numero" placeholder="Numero">
+                        <label for="code_">Code</label>
+                        <input type="text" value="" class="form-control mb-0 setcolor" id="code_" placeholder="Code">
                      </div>
 
                   </div>
                   <div class="form-group">
                      <label for="categorie_produit">Catégorie</label>
-                     <select id="categorie_produit" name="categorie_produit" class="form-control mb-0 setcolor">
+                     <select id="categorie_produit" class="form-control mb-0 setcolor">
 
                      </select>
                   </div>
@@ -38,25 +38,9 @@
             </div>
 
             <div class="row">
-               <div class="form-group col-md-3">
-                  <label for="produit_">Prix de vente</label>
-                  <input type="number" class="form-control mb-0 setcolor" id="pv" name="pv" placeholder="Prix de vente">
-               </div>
-               <div class="form-group col-md-3">
-                  <label for="produit_">Prix de vente Min</label>
-                  <input type="number" class="form-control mb-0 setcolor" id="pv_min" name="pv_min" placeholder="Prix de vente Min">
-               </div>
-               <div class="form-group col-md-3">
-                  <label for="produit_">Qte Min</label>
-                  <input type="number" class="form-control mb-0 setcolor" id="qte_min" name="qte_min" placeholder="Quantite Min">
-               </div>
-               <div class="form-group col-md-3">
-                  <label for="points">Points</label>
-                  <input type="number" class="form-control mb-0 setcolor" id="points" name="qte_min" placeholder="0">
-               </div>
                <div class="form-group col-md-12">
-                  <label for="description_prod">Description</label>
-                  <input type="text" class="form-control mb-0 setcolor" id="description_prod" name="description" placeholder="Description du produit">
+                  <label for="description_produit">Description</label>
+                  <textarea class="form-control mb-0 setcolor" id="description_produit"></textarea>
                </div>
             </div>
             <div id="txy"></div>
@@ -70,8 +54,49 @@
 </div>
 
 <script>
-    $('#blah').click(function() {
+   $('#blah').click(function() {
       $('#myfile').click();
 
-   })
+   });
+
+   function sendProd() {
+      document.getElementById("txy").innerHTML = "";
+      const formData = new FormData();
+      const imagefile = document.querySelector('#myfile');
+
+      formData.append("img", imagefile.files[0]);
+      formData.append("id", idProd);
+      formData.append("produit", document.getElementById("produit").value);
+      formData.append("code", document.getElementById("code_").value);
+      formData.append("categorie", document.getElementById("categorie_produit").value);
+      formData.append("description", document.getElementById("description_produit").value);
+
+      HttpPost("/produits-create", formData).then((res) => {
+
+         var json = res.data;
+
+         if (json.status == 200) {
+
+            if (idProd == "00") {
+
+               document.getElementById("txy").innerHTML = setErreur(false, json.message);
+               document.getElementById("produit").value = "";
+               document.getElementById("code_").value = "";
+               document.getElementById("description_produit").value = "";
+
+            } else {
+               idProd = "00";
+               $("#addProduit").modal('hide');
+            }
+
+            load();
+         } else {
+            document.getElementById("txy").innerHTML = setErreur(true, json.message);
+         }
+      });
+
+
+      
+
+   }
 </script>

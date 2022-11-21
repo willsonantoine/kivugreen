@@ -1,7 +1,5 @@
 <?php
-
-use Slim\Http\Request;
-use Slim\Http\Response;
+ 
 
 require './vendor/autoload.php';
 
@@ -15,10 +13,8 @@ session_start([
 
 include './db/variables.php';
 include './routes/index.php';
-include './routes/produit.php';
-include './routes/web.php';
-include './routes/login-start.php';
-include './routes/account.php';
+include './routes/produit.php'; 
+include './routes/login-start.php'; 
 include './routes/zones_marche.php';
 
 

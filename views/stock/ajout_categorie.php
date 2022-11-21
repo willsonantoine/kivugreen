@@ -47,3 +47,39 @@
         </div>
     </div>
 </div>
+<script>
+    function delete_categorie(id) {
+        HttpPost("/produit/categorie/delete", {
+            id
+        }).then((resp) => {
+            var json = resp.data;
+            all_categorie = json.data;
+            alert(json.message);
+            if (json.status == 200) {
+                loadCateg();
+            }
+
+        });
+    }
+
+    var id_categ = "00";
+
+    function sendCateg() {
+        HttpPost("/produits-create-categ", {
+            id: id_categ,
+            designation: document.getElementById("designation_categ").value,
+            description: document.getElementById("description_categ").value,
+        }).then((res) => {
+            var json = res.data.data;
+            if (res.data.status == 200) {
+                document.getElementById("designation_categ").value = "";
+                document.getElementById("description_categ").value = "",
+                    id_categ = "00";
+                load();
+                document.getElementById("txyx").innerHTML = setErreur(false, res.data.message);
+            } else {
+                document.getElementById("txyx").innerHTML = setErreur(true, res.data.message);
+            }
+        });
+    }
+</script>

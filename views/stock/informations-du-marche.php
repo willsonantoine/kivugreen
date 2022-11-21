@@ -35,50 +35,53 @@
                   <div class="iq-card">
                      <div class="iq-card-header d-flex justify-content-between">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Liste des produits</h4>
+                           <h4 class="card-title">Informations du marché</h4>
                         </div>
                      </div>
                      <div class="iq-card-body">
                         <div class="table-responsive">
                            <div class="row justify-content-between">
-                              <div class="col-sm-12 col-md-6">
+                              <div class="col-sm-12 col-md-12">
                                  <div id="user_list_datatable_info" class="dataTables_filter">
-                                    <div class="row" style="padding-left: 20px;">
-                                       <div class="form-group col-md-4">
-                                          <select class="form-control mr-2 setcolor" id="categorie_filtre" onchange="loadProd(document.getElementById('categorie_filtre').value);">
+                                    <div class="row" style="padding-left: 10px;">
+
+                                       <div class="form-group col-md-2">
+                                          <input type="date" id="date" class="form-control setcolor">
+                                       </div>
+                                       <div class="form-group col-md-2">
+                                          <select class="form-control mr-2 setcolor" id="zones" onchange="loadProd(document.getElementById('categorie_filtre').value);">
                                           </select>
                                        </div>
-                                       <div class="form-group col-md-4">
+                                       <div class="form-group col-md-2">
                                           <input type="text" id="txt_recherche" value="" class="form-control mr-2 setcolor" placeholder="Rechercher ici ... ">
                                        </div>
+
                                        <div class="form-group col-md-2">
                                           <input type="button" onclick="load(document.getElementById('txt_recherche').value);" value="Rechercher" class="btn btn-primary mr-2">
                                        </div>
+                                       <div class="form-group col-md-3">
+                                          <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" onchange="setValidateur();" id="non_validee">
+                                             <label class="custom-control-label" for="mon_validee">Informations non validée </label>
+                                          </div>
+                                       </div>
+                                       <div class="form-group col-md-2">
+                                          <div class="custom-control custom-switch">
+                                             <input type="checkbox" class="custom-control-input" onchange="setValidateur();" id="validateur1">
+                                             <label class="custom-control-label" for="validateur1">Informations validée </label>
+                                          </div>
+                                       </div>
                                     </div>
                                  </div>
                               </div>
 
-                              <div class="col-sm-12 col-md-6">
-                                 <div class="row ">
+                              <div class="col-sm-12 col-md-12">
+                                 <div class="row" style="padding-left:20px ;">
 
-                                    <div class="form-group col-md-3">
-                                       <button class="btn btn-primary" data-toggle="modal" data-target="#addProduit" onclick="initForm();">
-                                          Nouveau
-                                       </button>
-                                    </div>
-                                    <div class="form-group col-md-3">
-                                       <button class="btn btn-primary" data-toggle="modal" data-target="#addCategorie">
-                                          Catégorie
-                                       </button>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                       <button class="btn btn-primary" data-toggle="modal" data-target="#add_unite">
-                                          Unité de mésure
-                                       </button>
-                                    </div>
                                  </div>
                               </div>
                            </div>
+
                            <div id="xdiv"></div>
                            <div class="row">
                               <div class="col-md-12">
@@ -146,9 +149,8 @@
 
       <script>
          var all_categorie = [];
-         var all_produits = [];
-         var all_succursale = [];
-         var all_fournisseur = [];
+         var all_produits = []; 
+         var all_zones = [];
 
          load();
 
@@ -195,9 +197,8 @@
                var json = res.data.data;
                all_categorie = json.categories;
                all_produits = json.produits;
-               all_unite = json.unite;
+               all_unite = json.all_zones;
                access_files = url_base + res.data.file_folder;
-               $("#barcode").val(json.barcode);
                loadCateg();
                loadProd();
                loadUnite();
@@ -210,7 +211,7 @@
             tab.innerHTML = "";
             var xs = 1;
             all_produits.forEach(element => {
-               if (categ == null || categ=='') {
+               if (categ == null || categ == '') {
                   tab.innerHTML += setElements(xs, element);
                } else {
                   if (categ == element.id_categorie) {
@@ -344,6 +345,7 @@
             document.getElementById("txy").innerHTML = "";
             $('#blah').attr('src', '<?php url(); ?>views/images/defaultimg.jpeg');
          }
+         
       </script>
 
 
