@@ -49,58 +49,81 @@
                 <div class="col-sm-12 align-self-center bg-primary rounded">
                     <div class="row m-0">
                         <div class="col-md-12 bg-white sign-in-page-data">
-                            <div class="sign-in-from">
-                                <img src="<?php url() ?>views/images/imagekg.webp" height="60">
-                                <h5 style="font-size: 10px ;" class="text-center text-dark">Collecte d'informations du marché</h5>
-                                <form class="mt-4">
+                            <img src="<?php url() ?>views/images/imagekg.webp" height="60" class="text-center">
+                            <h5 style="font-size: 10px ;" class="text-center text-dark">Collecte d'informations du marché</h5>
+                            <div class="sign-info text-center">
+                                <a href="<?php url(); ?>admin/collecte">Nouvelle information</a>
+                            </div>
+                            <div class="iq-card-body">
+                                <ul class="suggestions-lists m-0 p-0" id="tab">
 
-                                    <div class="row">
-                                        <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="produit" onchange="document.getElementById('infos').innerHTML='';">
-
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="unite">
-
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <input type="number" class="form-control setcolor" id="prix" placeholder="Prix">
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="devise">
-                                                <option value="">Select devise</option>
-                                                <option value="CDF">Francs congolais</option>
-                                                <option value="USD">Dollars américain</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <textarea class="form-control setcolor" id="commentaire" placeholder="Commentaire"></textarea>
-                                        </div>
-                                    </div>
-
-                                    <div id="infos"></div>
-                                    <div class="sign-info text-center">
-                                        <button type="button" id="log" class="btn btn-primary d-block w-100 mb-2">Ajouter</button>
-                                    </div>
-                                    <div class="sign-info text-center">
-                                        <a href="<?php url(); ?>admin/collect-list">Mes collectes</a>
-                                    </div>
-                                </form>
+                                </ul>
                             </div>
                         </div>
-
                     </div>
+
                 </div>
             </div>
         </div>
+        </div>
     </section>
 
+    <script>
+        var all_data = [];
+        collecteliste();
+
+        function collecteliste() {
+            HttpPost("/produit/collecte/liste/by-collecteur").then(function(response) {
+                var json = response.data;
+                all_data = json.data;
+                access_files = url_base + response.data.file_folder;
+                Chargement();
+            }).cath((err) => {
+                console.log(err);
+            });
+        }
+
+        function Chargement() {
+            var tab = document.getElementById("tab");
+            tab.innerHTML = "";
+            all_data.forEach(element => {
+
+                tab.innerHTML += `<li class="d-flex mb-4 align-items-center">
+                                            <div class="profile-icon ">
+                                                <span>
+                                                    <img src="${access_files+element.img}" width=30>
+                                                </span>
+                                            </div>
+                                            <div class="media-support-info ml-3">
+                                                <h6>${element.produit}</h6>
+                                                <p style="color:#898989;" class="mb-0">${element.createAt}</p>
+                                            </div>
+                                            <div class="media-support-amount text-center ml-3">
+                                                <h6 class="text-info">${element.prix} ${element.devise}</h6>
+                                                <p style="color:white;border-radius:10px;" onclick="deleteThis('${element.id}')" class="mb-0 btn-danger"><a style="color:white;" href="#" >Delete</a></p>
+                                            </div> 
+                                        </li>
+                                        <hr>`;
+            });
+        }
+
+        function deleteThis(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cette information ?')) {
+                HttpPost("/produit/collecte/delete", {
+                    id
+                }).then((res) => {
+                    var json = res.data;
+                    if (json.status == 200) {
+                        collecteliste();
+                    }
+                });
+            }
+        }
+    </script>
+
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="<?php url() ?>in/collecte.js?x=<?php echo random_int(1, 19) ?>"></script>
 
     <script src="<?php url() ?>views/js/popper.min.js"></script>
     <script src="<?php url() ?>views/js/bootstrap.min.js"></script>

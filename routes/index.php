@@ -55,9 +55,22 @@ $app->get("/admin/informations", function (Request $request, Response $response)
 });
 
  
-$app->get("/collecte", function (Request $request, Response $response) {
+$app->get("/admin/collecte", function (Request $request, Response $response) {
    $menu = "collecte";
    include './views/stock/formulaire-collecte.php';
+});
+
+$app->get("/admin/collect-list", function (Request $request, Response $response) {
+   $menu = "collecte";
+   include './views/stock/liste_des_colletes.php';
+});
+$app->get("/admin/abonnement", function (Request $request, Response $response) {
+   $menu = "abonnement";
+   include './views/stock/abonnement_informations.php';
+});
+$app->get("/admin/abonnement-list", function (Request $request, Response $response) {
+   $menu = "abonnement-list";
+   include './views/stock/liste-abonnees.php';
 });
 
  

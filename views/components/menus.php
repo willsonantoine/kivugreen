@@ -32,8 +32,18 @@ if (!isset($_SESSION["token"])) {
                <a href="<?php url(); ?>admin/informations" class="iq-waves-effect">
                   <span class="ripple rippleEffect"></span><i class="fa fa-thumb-tack iq-arrow-left"></i><span>Informations</span></a>
             </li>
-
-
+            <li <?php active_menu('collecte', $menu); ?>>
+               <a href="<?php url(); ?>admin/collecte" class="iq-waves-effect">
+                  <span class="ripple rippleEffect"></span><i class="fa fa-sticky-note-o iq-arrow-left"></i><span>Collete</span></a>
+            </li>
+            <li <?php active_menu('abonnement', $menu); ?>>
+               <a href="<?php url(); ?>admin/abonnement" class="iq-waves-effect">
+                  <span class="ripple rippleEffect"></span><i class="fa fa-sticky-note-o iq-arrow-left"></i><span>Abonnement</span></a>
+            </li>
+            <li <?php active_menu('abonnement-list', $menu); ?>>
+               <a href="<?php url(); ?>admin/abonnement-list" class="iq-waves-effect">
+                  <span class="ripple rippleEffect"></span><i class="fa fa-sticky-note-o iq-arrow-left"></i><span>Liste Abonnées</span></a>
+            </li>
 
             <li <?php active_menu('produit', $menu); ?>>
                <a href="#ui-produit" class="iq-waves-effect collapsed" data-toggle="collapse" aria-expanded="false">

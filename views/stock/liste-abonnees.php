@@ -35,40 +35,13 @@
                   <div class="iq-card">
                      <div class="iq-card-header d-flex justify-content-between">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Informations du marché</h4>
+                           <h4 class="card-title">Liste des abonnees</h4>
                         </div>
                      </div>
                      <div class="iq-card-body">
                         <div class="table-responsive">
                            <div class="row justify-content-between">
-                              <div class="col-sm-12 col-md-12">
-                                 <div id="user_list_datatable_info" class="dataTables_filter">
-                                    <div class="row" style="padding-left: 10px;">
-
-                                       <div class="form-group col-md-2">
-                                          <select class="form-control mr-2 setcolor" id="zones" onchange="load(-1);">
-                                          </select>
-                                       </div>
-                                       <div class="form-group col-md-2">
-                                          <select class="form-control mr-2 setcolor" id="marches" onchange="load(-1);">
-                                          </select>
-                                       </div>
-
-                                       <div class="form-group col-md-3">
-                                          <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" onchange="load(0);" id="non_validee">
-                                             <label class="custom-control-label" for="non_validee">Informations non validée </label>
-                                          </div>
-                                       </div>
-                                       <div class="form-group col-md-2">
-                                          <div class="custom-control custom-switch">
-                                             <input type="checkbox" class="custom-control-input" onchange="load(1);" id="validee">
-                                             <label class="custom-control-label" for="validee">Informations validée </label>
-                                          </div>
-                                       </div>
-                                    </div>
-                                 </div>
-                              </div>
+                         
 
                               <div class="col-sm-12 col-md-12">
                                  <div class="row" style="padding-left:20px ;">
@@ -85,16 +58,16 @@
                                        <tr>
                                           <th>N°</th>
                                           <th>Image</th>
-                                          <th>Designation</th>
-                                          <th>Prix</th>
-                                          <th>Devise</th>
-                                          <th>Unite</th>
-                                          <th>Collecteur</th>
-                                          <th id="title_x">Collecteur</th>
+                                          <th>Nom complet</th>
+                                          <th>Phone</th>
+                                          <th>Packet</th>
+                                          <th>Marches</th>
+                                          <th>Produits</th>
+                                          <th>Solde SMS</th>
                                           <th>Action</th>
                                        </tr>
                                     </thead>
-                                    <tbody id="tab_collecte">
+                                    <tbody id="tab_abonnee">
 
                                     </tbody>
                                  </table>
@@ -145,62 +118,35 @@
 
 
       <script>
-         var all_categorie = [];
+         var list_marches = [];
          var all_collecte = [];
-         var all_zones = [];
+         var list_produits = [];
          var all_marches = [];
+         var list_abonnees = [];
 
          load();
 
 
-         var current_etat = 0;
+         function load() {
 
-         function load(etat = 0) {
 
-            if (etat == -1) {
-               etat = current_etat;
-            }
+            HttpPost("/abonnement/load", {
 
-            var zone = $("#zones").val();
-            var marche = $("#marches").val();
-
-            HttpPost("/produit/collecte/load", {
-               etat,
-               zone,
-               marche
             }).then((res) => {
-               var json = res.data.data;
-               all_collecte = json.collecte;
-               access_files = url_base + res.data.file_folder;
-               all_zones = json.zones;
-               all_marches = json.marche;
-
-               loadCombo("marches", all_marches, "Marché");
-               loadCombo("zones", all_zones, "Zone");
+               var json = res.data;
+               list_abonnees = json.data.abonnees;
+               list_marches = json.data.marches;
+               list_produits = json.data.produits;
                chargement();
-
-               document.getElementById("non_validee").checked = (etat == 0);
-               document.getElementById("validee").checked = (etat == 1);
-
-               setSelectBoxByText("marches", marche);
-               setSelectBoxByText("zones", zone);
-
-               current_etat = etat;
-               if (etat == 0) {
-                  $("#title_x").html("Date collection");
-               } else {
-                  $("#title_x").html("Date validation");
-               }
             });
          }
 
          function chargement() {
 
-            var tab = document.getElementById("tab_collecte");
+            var tab = document.getElementById("tab_abonnee");
             tab.innerHTML = "";
             var xs = 1;
-            all_collecte.forEach(element => {
-
+            list_abonnees.forEach(element => {
                tab.innerHTML += setElements(xs, element);
                xs++;
             });
@@ -210,38 +156,25 @@
          function setElements(x, element) {
 
 
-            var img = './<?php url(); ?>views/images/defaultimg.jpeg';
+            var img = './<?php url(); ?>views/images/defaultuser.png';
 
             if (element.img != null) {
                img = access_files + element.img;
             }
 
-            var act = `<div class="dropdown-menu dropdown-menu-right">
-                                                  
-                                                  <a class="dropdown-item" href="#" onclick='validateThis("${element.id}");'>
-                                                     <i class="ri-delete-bin-6-fill mr-2"></i>Valider
-                                                  </a>
-                                                  <a class="dropdown-item" href="#" onclick="if(confirm('Êtes-vous sûr de vouloir supprimer cette information')){deleteThis('${element.id}')} ">
-                                                     <i class="ri-pencil-fill mr-2">
-                                                     </i>Supprimer
-                                                  </a>
-                                                   
-                                               </div>`;
-            if (element.etat == 1) {
-               act = "";
-            }
-
-            date = (element.etat == 1) ? element.date_validate : element.createAt;
+            var marches = getAll_marches(element.id_marche);
+            var produits = getAll_produits(element.id_produits);
+           
 
             return `<tr>
                                        <td>${x}</td>
                                        <td class="text-center"><img class="rounded img-fluid avatar-40" src="${img}" alt="profile"></td>                      
-                                       <td>${element.produit}</td> 
-                                       <td>${element.prix}</td>
-                                       <td>${element.devise}</td> 
-                                       <td>${element.unites} [ ${element.valeur_kg} Kg ]</td>
-                                       <td>${element.fullname}</td>
-                                       <td>${date}</td>
+                                       <td>${element.fullname}</td> 
+                                       <td>${element.phone}</td>
+                                       <td>${element.packet} (${element.packet_sms} SMS)</td> 
+                                       <td>${marches}</td>
+                                       <td>${produits}</td>
+                                       <td>${element.solde_sms}</td>
                                        <td>
                                           <div class="iq-card-header-toolbar d-flex align-items-center">
 
@@ -249,7 +182,7 @@
                                                 <span class="dropdown-toggle text-primary" data-toggle="dropdown">
                                                    <i class="ri-more-fill"></i>
                                                 </span>
-                                                ${act}
+                                                
                                              </div>
                                           </div>
 
@@ -257,6 +190,48 @@
                                     </tr>`;
          }
 
+         function getAll_marches(tab = []) {
+            let text = "";
+            var new_tab = JSON.parse(tab);
+            new_tab.forEach(element => {
+               text += `<span style="margin:5px;" class="badge badge-primary">${getValMarche(element)}</span>`;
+            });
+
+            return text;
+         }
+
+         function getAll_produits(tab = []) {
+            let text = "";
+            var new_tab = JSON.parse(tab);
+            new_tab.forEach(element => {
+               text += `<span style="margin:5px;" class="badge badge-primary">${getValProduit(element)}</span>`;
+            });
+
+            return text;
+         }
+
+         function getValMarche(id) {
+            var el = "";
+            list_marches.forEach(element => {
+              
+               if (id == element.id) {
+                  el =  element.designation;
+               }
+
+            });
+             return el;
+         }
+         function getValProduit(id) {
+            var el = "";
+            list_produits.forEach(element => {
+              
+               if (id == element.id) {
+                  el =  element.designation;
+               }
+
+            });
+             return el;
+         }
 
 
 
@@ -284,7 +259,7 @@
                   document.getElementById("xdiv").innerHTML = setErreur(true, json.message);
                }
             });
-            
+
          }
 
          function validateThis(id) {

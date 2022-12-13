@@ -51,38 +51,40 @@
                         <div class="col-md-12 bg-white sign-in-page-data">
                             <div class="sign-in-from">
                                 <img src="<?php url() ?>views/images/imagekg.webp" height="60">
-                                <h5 style="font-size: 10px ;" class="text-center text-dark">Collecte d'informations du marché</h5>
+                                <h5 style="font-size: 10px ;" class="text-center text-dark">Abonnement Informations du marché</h5>
                                 <form class="mt-4">
 
                                     <div class="row">
+
+
                                         <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="produit" onchange="document.getElementById('infos').innerHTML='';">
+                                            <label for="marche">Numéro de téléphone</label>
+                                            <input type="phone" class="form-control setcolor" id="phone" placeholder="+24300000000">
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <label for="marche">Liste des marchés</label>
+                                            <select class="form-control setcolor" multiple id="marche" onchange="">
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="marche">Liste des produits</label>
+                                            <select class="form-control setcolor" multiple id="produit" onchange="">
+                                            </select>
+                                        </div>
+
+                                        <div class="form-group col-md-4">
+                                            <select class="form-control setcolor" id="packet" onchange="">
 
                                             </select>
                                         </div>
-                                        <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="unite">
 
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <input type="number" class="form-control setcolor" id="prix" placeholder="Prix">
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <select class="form-control setcolor" id="devise">
-                                                <option value="">Select devise</option>
-                                                <option value="CDF">Francs congolais</option>
-                                                <option value="USD">Dollars américain</option>
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
-                                            <textarea class="form-control setcolor" id="commentaire" placeholder="Commentaire"></textarea>
-                                        </div>
+
                                     </div>
 
                                     <div id="infos"></div>
                                     <div class="sign-info text-center">
-                                        <button type="button" id="log" class="btn btn-primary d-block w-100 mb-2">Ajouter</button>
+                                        <button type="button" id="log" class="btn btn-primary d-block w-100 mb-2" onclick="save()">Ajouter</button>
                                     </div>
                                     <div class="sign-info text-center">
                                         <a href="<?php url(); ?>admin/collect-list">Mes collectes</a>
@@ -96,11 +98,61 @@
             </div>
         </div>
     </section>
+    <script>
+        var list_produits = [];
+        var list_marches = [];
+        var list_packets = [];
+
+        load_init();
+
+        function save() {
+            var marche = $("#marche").val();
+            var produit = $("#produit").val();
+            if (marche.length > 1) {
+
+                HttpPost("/abonnement/create", {
+                    phone: $("#phone").val(),
+                    marche: marche,
+                    produit: $("#produit").val(),
+                    packet: $("#packet").val(),
+                }).then(function(res) {
+                    var json = res.data;
+                    document.getElementById("infos").innerHTML = setErreur((json.status != 200), json.message, "Alert", "log")
+                    if (json.status == 200) {
+
+                    }
+                });
+            }else{
+                
+            }
+
+        }
+
+        function load_init() {
+            HttpPost("/abonnement/load-infos", {}).then(function(res) {
+                var json = res.data.data;
+                list_marches = json.marches;
+                list_packets = json.packets;
+                list_produits = json.produits;
+
+                loadCombo("marche", list_marches," All");
+                loadCombo("packet", list_packets);
+                loadCombo("produit", list_produits ," All");
+            });
+        }
+
+        function loadCombo(id, liste = [], default_val = "Select") {
+            var el = document.getElementById(id);
+            el.innerHTML = `<option value="">${default_val}</option>`;
+            liste.forEach(element => {
+                el.innerHTML += `<option value="${element.id}">${element.designation}</option>`;
+            });
+        }
+    </script>
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
 
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="<?php url() ?>in/collecte.js?x=<?php echo random_int(1, 19) ?>"></script>
 
     <script src="<?php url() ?>views/js/popper.min.js"></script>
     <script src="<?php url() ?>views/js/bootstrap.min.js"></script>

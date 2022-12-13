@@ -2,6 +2,7 @@ $(document).ready(function () {
 
     var all_unites = [];
     var all_produits = [];
+    var all_devise = [];
 
     init_log();
 
@@ -9,14 +10,18 @@ $(document).ready(function () {
         var prix = $("#prix").val();
         var unite = $("#unite").val();
         var produit = $("#produit").val();
+        var devise = $("#devise").val();
+        var commentaire = $("#commentaire").val();
 
-        HttpPost("/produit/collecte/create", { produit, unite, prix },"log").then((response) => {
+        HttpPost("/produit/collecte/create", { produit, unite, prix,devise,commentaire},"log").then((response) => {
             var json = response.data;
             if (json.status == 200) { 
                 
                 $('#prix').val('');
                 $('#unite').val('');
                 $('#produit').val('');
+                $('#commentaire').val('');
+
 
                 document.getElementById("infos").innerHTML = setErreur(false, json.message,"Success",'log','Ajouter');
             } else {
@@ -35,6 +40,7 @@ $(document).ready(function () {
             console.log(json);
             all_produits = json.data.produit;
             all_unites = json.data.unite;
+            all_devise = json.devise;
             loadCombo('produit',all_produits,'Produit')
             loadCombo('unite',all_unites,'Unité')
         }).catch((error) => {
@@ -48,6 +54,6 @@ $(document).ready(function () {
         liste.forEach(element => {
            el.innerHTML += `<option value="${element.id}">${element.designation}</option>`;
         });
-     }
+    }
 
 });

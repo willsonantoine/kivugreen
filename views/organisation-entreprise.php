@@ -71,12 +71,6 @@
                         <a class="nav-link active" id="home-tab-end" data-toggle="tab" href="#home-end" role="tab" aria-controls="home" aria-selected="true">Informations</a>
                      </li>
                      <li class="nav-item">
-                        <a class="nav-link" id="profile-tab-end" data-toggle="tab" href="#profile-end" role="tab" aria-controls="profile" aria-selected="false">Succursales/Agences</a>
-                     </li>
-                     <li class="nav-item">
-                        <a class="nav-link" id="profile-tab-end" data-toggle="tab" href="#carte-fidelite" role="tab" aria-controls="profile" aria-selected="false">Carte de fidélité</a>
-                     </li>
-                     <li class="nav-item">
                         <a class="nav-link" id="contact-tab-end" data-toggle="tab" href="#contact-end" role="tab" aria-controls="contact" aria-selected="false">SMS Orange</a>
                      </li>
                   </ul>
@@ -163,78 +157,8 @@
                            </div>
                         </div>
                      </div>
-                     <div class="tab-pane fade" id="carte-fidelite" role="tabpanel" aria-labelledby="profile-tab-end">
-
-                        <div class="row">
-                           <h3 class="col-md-9">Carte de fidelite</h3>
-
-                        </div>
-                        <div class="row">
-                           <div class="col-md-12">
-                              <div class="row">
-                                 <div class="form-group col-md-3">
-                                    <label>Valeur d'un point</label>
-                                    <input type="number" id="point_valeur" class="form-control setcolor">
-                                 </div>
-                                 <div class="form-group col-md-2">
-                                    <label>Devise</label>
-                                    <select id="devise_valeur" class="form-control setcolor">
-                                       <option value="CDF">CDF</option>
-                                       <option value="USD">USD</option>
-                                    </select>
-                                 </div>
-                                 <div class="form-group col-md-3">
-                                    <label>Valeur Min</label>
-                                    <input type="number" id="conversion_min" class="form-control setcolor">
-                                 </div>
-                                 <div class="form-group col-md-2">
-                                    <label>Devise</label>
-                                    <select id="devise_valeur" class="form-control setcolor">
-                                       <option value="CDF">CDF</option>
-                                       <option value="USD">USD</option>
-                                    </select>
-                                 </div>
-                                 <div class="form-group col-md-12" id="alx">
-
-                                 </div>
-                                 <div class="form-group col-md-12">
-                                    <label for="mere" style="color:white ;"></label>
-                                    <input type="button" onclick="save_organisation();" value="Enregistrer" class="btn btn-primary">
-                                 </div>
-                              </div>
-                           </div>
 
 
-                        </div>
-                     </div>
-                     <div class="tab-pane fade" id="profile-end" role="tabpanel" aria-labelledby="profile-tab-end">
-
-                        <div class="row">
-                           <h3 class="col-md-9">Liste des Succursales/Agences</h3>
-                           <div class="col-md-3 justify-content-between">
-
-                              <input type="button" class="btn btn-primary" data-toggle="modal" data-target=".create-siccursale" value="Nouveau sicursale">
-
-                           </div>
-                        </div>
-                        <table id="user-list-table" class="table table-striped table-bordered mt-4" role="grid" aria-describedby="user-list-page-info">
-                           <thead>
-                              <tr>
-                                 <th>N°</th>
-                                 <th>Nom</th>
-                                 <th>Prefix</th>
-                                 <th>Phone</th>
-                                 <th>Email</th>
-                                 <th>Adresse</th>
-                                 <th>Action</th>
-                              </tr>
-                           </thead>
-                           <tbody id="liste">
-
-
-                           </tbody>
-                        </table>
-                     </div>
 
                      <div class="tab-pane fade" id="contact-end" role="tabpanel" aria-labelledby="contact-tab-end">
                         <div class="row">
@@ -304,6 +228,19 @@
       const list = document.getElementById("list");
       var succursale = [];
       var config = [];
+
+      function load() {
+
+
+         HttpPost("/parametres/config/load", {}).then((res) => { 
+            config = res.data.data.config;
+            access_files = url_base + res.data.file_folder;
+            loadConfig(); 
+         }).catch((error) => {
+            $("#infos").html(setErreur(true, error.message));
+         });
+
+      }
 
       function loadConfig() {
 
@@ -385,70 +322,8 @@
 
       }
 
-      function load() {
 
 
-         HttpPost("/parametres/siccursale/load", {}).then((res) => {
-            succursale = res.data.data.succursale;
-            config = res.data.data.config;
-            load_liste();
-            loadConfig();
-         }).catch((error) => {
-            $("#infos").html(setErreur(true, error.message));
-         });
-
-      }
-
-      function save_succursale() {
-
-         HttpPost("/parametres/siccursale", {
-            nom: document.getElementById("nom").value,
-            phone: document.getElementById("phone").value,
-            email: document.getElementById("email").value,
-            adresse: document.getElementById("adresse").value,
-            id: document.getElementById("id_").value,
-            prefix: document.getElementById("prefix").value
-         }).then((res) => {
-            var data = res.data;
-            if (data.status == 200) {
-
-               document.getElementById("nom").value = "";
-               document.getElementById("phone").value = "";
-               document.getElementById("email").value = "";
-               document.getElementById("adresse").value = "";
-               document.getElementById("prefix").value = "";
-               document.getElementById("id_").value = "00";
-
-               load();
-               $("#infos").html(setErreur(false, data.message));
-            } else {
-               $("#infos").html(setErreur(true, data.message));
-            }
-         }).catch((error) => {
-            $("#infos").html(setErreur(true, error.message));
-         });
-
-      }
-
-      function delete_succursale(id) {
-
-         if (confirm('Êtes-vous sûr de vouloir supprimer cet élément?')) {
-
-            HttpPost("/parametres/siccursale/delete", {
-               id
-            }).then((res) => {
-               var data = res.data;
-               if (data.status == 200) {
-                  load();
-               } else {
-                  alert(data.message);
-               }
-            }).catch((error) => {
-               alert(error.message);
-            });
-
-         }
-      }
 
       function testmessage() {
 
@@ -470,60 +345,7 @@
 
          }
       }
-
-      function load_liste() {
-
-         liste.innerHTML = "";
-         succursale.forEach(element => {
-            liste.innerHTML += getElement(element);
-         });
-
-      }
-
-      function selectV(id) {
-
-         succursale.forEach(element => {
-
-            if (element.id == id) {
-
-               document.getElementById("nom").value = element.nom;
-               document.getElementById("phone").value = element.tel;
-               document.getElementById("email").value = element.email;
-               document.getElementById("adresse").value = element.adresse;
-               document.getElementById("id_").value = element.id;
-               document.getElementById("prefix").value = element.prefix;
-
-            }
-
-         });
-      }
-
-      function getElement(element) {
-
-         return `<tr>
-                     <td>${element.id}</td>
-                     <td>${element.nom}</td>
-                     <td>${element.prefix}</td>
-                     <td>${element.tel}</td>
-                     <td>${element.email}</span>
-                     <td>${element.adresse}</span>
-                     </td>
-                     <td>
-                        <div class="flex align-items-center list-user-action">
-                           <a class="iq-bg-primary" onclick="selectV('${element.id}');" data-toggle="modal" data-target=".create-siccursale" href="#">
-                              <i class="ri-pencil-line"></i>
-                           </a>
-                           <a class="iq-bg-primary" onclick="delete_succursale('${element.id}');" href="#">
-                           <i class="fa fa-trash" aria-hidden="true"></i>
-                           </a>
-                        </div>
-                     </td>
-                  </tr>`;
-      }
    </script>
-
-   <!-- Modal -->
-   <?php include './views/dialog/siccursale.php'; ?>
    <!-- color-customizer END -->
    <!-- Optional JavaScript -->
    <!-- jQuery first, then Popper.js, then Bootstrap JS -->

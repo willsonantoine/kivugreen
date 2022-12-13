@@ -58,7 +58,7 @@ function getProfilData($id)
     return $json;
 }
 
-function url($link = null)
+function url($link = null, $nbr = 2)
 {
     $url = $_SERVER['REQUEST_URI'];
 
@@ -66,8 +66,8 @@ function url($link = null)
     $i = "";
 
 
-    if (count($tab) > 2) {
-        for ($x = 2; $x < count($tab); $x++) {
+    if (count($tab) > $nbr) {
+        for ($x = $nbr; $x < count($tab); $x++) {
             $i .= '../';
         }
     }
@@ -79,14 +79,15 @@ function url($link = null)
     }
 }
 
-function BaseUrl($file=__FILE__){
-    
-    $currentFile = array_reverse(explode(DIRECTORY_SEPARATOR,$file))[0];
-    if(!empty($_SERVER['QUERY_STRING'])){
-        $currentFile.='?'.$_SERVER['QUERY_STRING'];
+function BaseUrl($file = __FILE__)
+{
+
+    $currentFile = array_reverse(explode(DIRECTORY_SEPARATOR, $file))[0];
+    if (!empty($_SERVER['QUERY_STRING'])) {
+        $currentFile .= '?' . $_SERVER['QUERY_STRING'];
     }
-    $protocol = $_SERVER['PROTOCOL'] == isset($_SERVER['HTTPS']) &&     
-                              !empty($_SERVER['HTTPS']) ? 'https' : 'http';
+    $protocol = $_SERVER['PROTOCOL'] == isset($_SERVER['HTTPS']) &&
+        !empty($_SERVER['HTTPS']) ? 'https' : 'http';
     $url = "$protocol://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
     $url = str_replace($currentFile, '', $url);
 

@@ -157,7 +157,7 @@
             $("#identification").html(""+json.identifications);
             $("#transactions").html(""+json.transactions);
             $("#utilisateurs").html(""+json.utilisateurs);
-            $("#cooperative").html(""+json.cooperative);
+            $("#cooperative").html("0");
             setErreur(true, res.data.message);
          });
       }

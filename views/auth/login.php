@@ -133,14 +133,13 @@
     <script src="<?php url(); ?>views/js/chart-custom.js"></script>
     <!-- Custom JavaScript -->
     <script src="<?php url(); ?>views/js/custom.js"></script>
-
-
     <script>
         var xs = '<?php echo $exist; ?>';
         if (xs == '1') {
             localStorage.setItem('access_token', null);
         }
     </script>
+
 </body>
 
 </html>
