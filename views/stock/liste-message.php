@@ -35,7 +35,7 @@
                   <div class="iq-card">
                      <div class="iq-card-header d-flex justify-content-between">
                         <div class="iq-header-title">
-                           <h4 class="card-title">Liste des abonnees</h4>
+                           <h4 class="card-title">Liste des messages</h4>
                         </div>
                      </div>
                      <div class="iq-card-body">
@@ -60,15 +60,14 @@
                                           <th>Image</th>
                                           <th>Nom complet</th>
                                           <th>Phone</th>
-                                          <th>Packet</th>
-                                          <th>Marches</th>
-                                          <th>Produits</th>
-                                          <th>Solde SMS</th>
-                                          <th>Langue</th>
+                                          <th>Message</th>
+                                          <th>Etat</th>
+                                          <th>Date</th>
+                                          <th>Observation</th> 
                                           <th>Action</th>
                                        </tr>
                                     </thead>
-                                    <tbody id="tab_abonnee">
+                                    <tbody id="tab_message">
 
                                     </tbody>
                                  </table>
@@ -123,7 +122,7 @@
          var all_collecte = [];
          var list_produits = [];
          var all_marches = [];
-         var list_abonnees = [];
+         var list_messages = [];
 
          load();
 
@@ -131,23 +130,21 @@
          function load() {
 
 
-            HttpPost("/abonnement/load", {
+            HttpPost("/abonnement/messages", {
 
             }).then((res) => {
                var json = res.data;
-               list_abonnees = json.data.abonnees;
-               list_marches = json.data.marches;
-               list_produits = json.data.produits;
+               list_messages = json.data; 
                chargement();
             });
          }
 
          function chargement() {
 
-            var tab = document.getElementById("tab_abonnee");
+            var tab = document.getElementById("tab_message");
             tab.innerHTML = "";
             var xs = 1;
-            list_abonnees.forEach(element => {
+            list_messages.forEach(element => {
                tab.innerHTML += setElements(xs, element);
                xs++;
             });
@@ -161,22 +158,19 @@
 
             if (element.img != null) {
                img = access_files + element.img;
-            }
-
-            var marches = getAll_marches(element.id_marche);
-            var produits = getAll_produits(element.id_produits);
+            } 
            
+            var etat = (element.etat==1) ? '<span class="badge badge-primary">Success</span>' : '<span class="badge badge-danger">Erreur</span>';
 
             return `<tr>
                                        <td>${x}</td>
                                        <td class="text-center"><img class="rounded img-fluid avatar-40" src="${img}" alt="profile"></td>                      
                                        <td>${element.fullname}</td> 
                                        <td>${element.phone}</td>
-                                       <td>${element.packet} (${element.packet_sms} SMS)</td> 
-                                       <td>${marches}</td>
-                                       <td>${produits}</td>
-                                       <td>${element.solde_sms}</td>
-                                       <td>${element.langue}</td>
+                                       <td>${element.message} SMS)</td> 
+                                       <td>${etat}</td>
+                                       <td>${element.createAt}</td> 
+                                       <td>${element.observation}</td>
                                        <td>
                                           <div class="iq-card-header-toolbar d-flex align-items-center">
 
@@ -184,14 +178,7 @@
                                                 <span class="dropdown-toggle text-primary" data-toggle="dropdown">
                                                    <i class="ri-more-fill"></i>
                                                 </span>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                   
-                                                  <a class="dropdown-item" href="#" onclick="if(confirm('Êtes-vous sûr de vouloir supprimer cette information')){deleteThis('${element.id}')} ">
-                                                     <i class="ri-pencil-fill mr-2">
-                                                     </i>Supprimer
-                                                  </a>
-                                                   
-                                               </div>
+                                                
                                              </div>
                                           </div>
 
@@ -240,7 +227,9 @@
 
             });
              return el;
-         } 
+         }
+
+
 
          function setSelectBoxByText(eid, etxt) {
 
@@ -255,7 +244,7 @@
 
          function deleteThis(id) {
 
-            HttpPost("/abonnement/delete", {
+            HttpPost("/produit/collecte/delete", {
                id
             }).then((res) => {
                var json = res.data;

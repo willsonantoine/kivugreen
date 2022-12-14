@@ -51,7 +51,7 @@
                         <div class="col-md-12 bg-white sign-in-page-data">
                             <div class="sign-in-from">
                                 <img src="<?php url() ?>views/images/imagekg.webp" height="60">
-                                <h5 style="font-size: 10px ;" class="text-center text-dark">Abonnement Informations du marché</h5>
+                                <h5 style="font-size: 20px ;" class="text-center text-dark">Abonnement aux conseils agricole</h5>
                                 <form class="mt-4">
 
                                     <div class="row">
@@ -62,23 +62,12 @@
                                         </div>
 
                                         <div class="form-group col-md-4">
-                                            <label for="marche">Liste des marchés</label>
-                                            <select class="form-control setcolor" multiple id="marche" onchange="">
-                                            </select>
-                                        </div>
-                                        <div class="form-group col-md-4">
                                             <label for="marche">Liste des produits</label>
                                             <select class="form-control setcolor" multiple id="produit" onchange="">
                                             </select>
                                         </div>
 
-
-                                        <div class="form-group col-md-4">
-                                            <label for="marche">Liste des packets</label>
-                                            <select class="form-control setcolor" id="packet" onchange="">
-
-                                            </select>
-                                        </div>
+ 
                                         <div class="form-group col-md-4">
                                             <label for="marche">Langue</label>
                                             <select class="form-control setcolor" id="langue" onchange="">
@@ -95,7 +84,7 @@
                                         <button type="button" id="log" class="btn btn-primary d-block w-100 mb-2" onclick="save()">Ajouter</button>
                                     </div>
                                     <div class="sign-info text-center">
-                                        <a href="<?php url(); ?>admin/collect-list">Mes collectes</a>
+                                        <a href="<?php url(); ?>admin/home">Quitter</a>
                                     </div>
                                 </form>
                             </div>
@@ -113,28 +102,24 @@
 
         load_init();
 
-        function save() {
-            var marche = $("#marche").val();
+        function save() { 
             var produit = $("#produit").val();
             var langue = $("#langue").val();
-            if (marche.length > 0) {
 
-                HttpPost("/abonnement/create", {
+            if (produit.length > 0) {
+
+                HttpPost("/conseil/create-abonnement", {
                     phone: $("#phone").val(),
-                    marche: marche,
                     langue: langue,
                     produit: $("#produit").val(),
-                    packet: $("#packet").val(),
                 }).then(function(res) {
                     var json = res.data;
                     document.getElementById("infos").innerHTML = setErreur((json.status != 200), json.message, "Alert", "log")
                     if (json.status == 200) {
-
-                        $("#marche").val('');
+                        $("#phone").val('');
                         $("#produit").val('');
-                        $("#langue").val('');
-                        $("#packet").val('')
-                        
+                        $("#langue").val(''); 
+
                     }
                 });
             } else {
@@ -149,9 +134,7 @@
                 list_marches = json.marches;
                 list_packets = json.packets;
                 list_produits = json.produits;
-
-                loadCombo("marche", list_marches, " All");
-                loadCombo("packet", list_packets);
+ 
                 loadCombo("produit", list_produits, " All");
             });
         }

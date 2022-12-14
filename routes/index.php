@@ -68,9 +68,21 @@ $app->get("/admin/abonnement", function (Request $request, Response $response) {
    $menu = "abonnement";
    include './views/stock/abonnement_informations.php';
 });
+$app->get("/admin/conseil-agricole", function (Request $request, Response $response) {
+   $menu = "conseil-agricole";
+   include './views/stock/list-conseil-agricole.php';
+});
+$app->get("/admin/abonnement-conseil", function (Request $request, Response $response) {
+   $menu = "conseil-agricole";
+   include './views/stock/abonnement_conseille.php';
+});
 $app->get("/admin/abonnement-list", function (Request $request, Response $response) {
-   $menu = "abonnement-list";
+   $menu = "abonnement";
    include './views/stock/liste-abonnees.php';
+});
+$app->get("/admin/message-list", function (Request $request, Response $response) {
+   $menu = "message-list";
+   include './views/stock/liste-message.php';
 });
 
  
